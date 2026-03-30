@@ -69,3 +69,5 @@ python3 -m pytest tests/test_pawpal.py -v
 ```
 
 The tests verify key behaviors: task status changes, task counting, chronological ordering in schedules, daily recurrence creation, and conflict detection for overlapping times. I give my system a 5 stars in reliability.
+
+<img src="pawpal.png" width="500">
