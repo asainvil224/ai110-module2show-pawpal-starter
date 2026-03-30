@@ -50,3 +50,11 @@ pip install -r requirements.txt
 - **Extras**: Task recurrence for auto-rescheduling, filtering/sorting tasks, and tradeoff-aware design prioritizing realism/simplicity.
 
 
+### Testing PawPal+
+
+Run the tests with:
+```bash
+python3 -m pytest tests/test_pawpal.py -v
+```
+
+The tests verify key behaviors: task status changes, task counting, chronological ordering in schedules, daily recurrence creation, and conflict detection for overlapping times. I give my system a 5 stars in reliability.
