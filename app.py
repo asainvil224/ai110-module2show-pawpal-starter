@@ -1,4 +1,5 @@
 import streamlit as st
+from pawpal_system import Owner, Pet, Task, AppController
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
@@ -49,6 +50,17 @@ st.caption("Add a few tasks. In your final version, these should feed into your 
 if "tasks" not in st.session_state:
     st.session_state.tasks = []
 
+if "owner" not in st.session_state:
+    # initial owner object in session state for reuse across interactions
+    st.session_state.owner = Owner(owner_name, 120, {"morning_person": True})
+    st.session_state.owner.add_pet(Pet(pet_name, species, 2, []))
+
+else:
+    # if owner exists in state, keep current pet task inputs only
+    # if user changes the owner/pet inputs manually, we can update.
+    st.session_state.owner.name = owner_name
+    # note: we do not fully recreate to avoid wiping existing schedules
+
 col1, col2, col3 = st.columns(3)
 with col1:
     task_title = st.text_input("Task title", value="Morning walk")
@@ -57,10 +69,27 @@ with col2:
 with col3:
     priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
 
+if st.button("Add pet"):
+    # Add pet via owner.add_pet() method
+    new_pet = Pet(pet_name, species, 2, [])
+    if pet_name and species:
+        st.session_state.owner.add_pet(new_pet)
+        st.success(f"Added pet {pet_name} ({species})")
+
+pet_names = [p.name for p in st.session_state.owner.pets] if st.session_state.owner.pets else []
+
+selected_pet_name = st.selectbox("Select pet for task", pet_names or [pet_name])
+selected_pet = next((p for p in st.session_state.owner.pets if p.name == selected_pet_name), st.session_state.owner.pets[0] if st.session_state.owner.pets else None)
+
 if st.button("Add task"):
-    st.session_state.tasks.append(
-        {"title": task_title, "duration_minutes": int(duration), "priority": priority}
-    )
+    # Create a Task object and add to task manager + pet
+    priority_map = {"high": 1, "medium": 2, "low": 3}
+    task_obj = Task(task_title or "Untitled", int(duration), priority_map.get(priority, 3), selected_pet)
+    st.session_state.owner.task_manager.add_task(task_obj)
+    if selected_pet:
+        selected_pet.add_task(task_obj)
+    st.session_state.tasks.append({"title": task_title, "duration_minutes": int(duration), "priority": priority})
+    st.success(f"Added task {task_title} to {selected_pet.name if selected_pet else 'no pet'}")
 
 if st.session_state.tasks:
     st.write("Current tasks:")
@@ -74,15 +103,27 @@ st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    # Build a simple runtime owner/pet/task schedule using the backend classes.
+    demo_owner = st.session_state.owner
+
+    # use already stored Task objects in owner's TaskManager
+    # scheduler will read these. no rebuild required.
+
+    controller = AppController(demo_owner)
+    schedule = controller.get_schedule(date=None)
+
+    st.success("Today's Schedule (simple demo, all tasks included)")
+    total_minutes = schedule.get_total_time()
+    st.write(f"Total time: {total_minutes} minutes")
+    rows = []
+    for task in schedule.get_selected_tasks():
+        rows.append(
+            {
+                "Task": task.name,
+                "Pet": task.pet.name,
+                "Duration": f"{task.duration} min",
+                "Priority": task.priority,
+                "Status": task.status,
+            }
+        )
+    st.table(rows)

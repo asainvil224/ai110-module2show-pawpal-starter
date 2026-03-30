@@ -16,13 +16,14 @@ Yes, there were some relationship issues that I needed to fix. The design now be
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+The scheduler considers priority, available time and task status. I prioritized constraints based on core pet care needs and simplicity, priority and available time were essential for realistic, non-overwhelming schedules, while status filtering improved relevance without complexity.
+
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+My scheduler prioritizes respecting available time vs flexibility.Tasks are added only if they fit within the owner's available time, preventing over-scheduling. This enhances realism but may leave lower-priority tasks unscheduled if high-priority ones consume the time, without options for partial scheduling or time redistribution.
+
+
 
 ---
 
