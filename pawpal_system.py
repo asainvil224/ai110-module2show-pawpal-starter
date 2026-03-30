@@ -3,12 +3,20 @@ class Owner:
         self.name = name
         self.available_time = available_time  # e.g., hours per day
         self.preferences = preferences  # dict of preferences
+        self.pets = []  # list of Pet objects
+        self.task_manager = TaskManager()  # each owner has their own task manager
 
     def update_preferences(self, new_preferences):
         pass
 
     def get_available_time(self):
         pass
+
+    def add_pet(self, pet):
+        self.pets.append(pet)
+
+    def get_pets(self):
+        return self.pets
 
 
 class Pet:
@@ -17,6 +25,7 @@ class Pet:
         self.pet_type = pet_type  # e.g., dog, cat
         self.age = age
         self.special_needs = special_needs  # list of special care needs
+        self.tasks = []  # list of Task objects
 
     def add_special_need(self, need):
         pass
@@ -24,13 +33,21 @@ class Pet:
     def get_special_needs(self):
         pass
 
+    def add_task(self, task):
+        self.tasks.append(task)
+
+    def task_count(self):
+        return len(self.tasks)
+
 
 class Task:
-    def __init__(self, name, duration, priority, time_constraints=None):
+    def __init__(self, name, duration, priority, pet, time_constraints=None):
         self.name = name
-        self.duration = duration  # in minutes or hours
-        self.priority = priority  # e.g., high, medium, low
+        self.duration = duration  # in minutes
+        self.priority = priority  # e.g., 1 (high), 2 (medium), 3 (low)
+        self.pet = pet  # reference to Pet object
         self.time_constraints = time_constraints  # optional dict or list
+        self.status = "pending"  # pending or completed
 
     def is_feasible(self, available_time):
         pass
@@ -38,34 +55,45 @@ class Task:
     def update_duration(self, new_duration):
         pass
 
+    def mark_complete(self):
+        self.status = "completed"
+
 
 class TaskManager:
     def __init__(self):
         self.tasks = []  # list of Task objects
 
     def add_task(self, task):
-        pass
+        self.tasks.append(task)
 
     def edit_task(self, task_id, updated_task):
-        pass
+        if 0 <= task_id < len(self.tasks):
+            self.tasks[task_id] = updated_task
 
     def remove_task(self, task_id):
-        pass
+        if 0 <= task_id < len(self.tasks):
+            self.tasks.pop(task_id)
 
     def get_tasks(self):
-        pass
+        return self.tasks
 
     def get_task_by_id(self, task_id):
-        pass
+        if 0 <= task_id < len(self.tasks):
+            return self.tasks[task_id]
+        return None
 
 
 class Scheduler:
-    def __init__(self, owner, task_manager):
+    def __init__(self, owner):
         self.owner = owner
-        self.task_manager = task_manager
 
-    def generate_schedule(self):
-        pass
+    def generate_schedule(self, date=None):
+        # Simple implementation: include all tasks
+        schedule = Schedule(self.owner, date)
+        tasks = self.owner.task_manager.get_tasks()
+        for task in tasks:
+            schedule.add_task(task)
+        return schedule
 
     def prioritize_tasks(self, tasks):
         pass
@@ -75,38 +103,44 @@ class Scheduler:
 
 
 class Schedule:
-    def __init__(self):
+    def __init__(self, owner, date):
+        self.owner = owner  # reference to Owner
+        self.date = date  # date for the schedule
         self.selected_tasks = []  # list of selected Task objects
-        self.total_time = 0  # total time in minutes or hours
+        self.total_time = 0  # total time in minutes
 
     def add_task(self, task):
-        pass
+        self.selected_tasks.append(task)
+        self.total_time += task.duration
 
     def remove_task(self, task_id):
-        pass
+        if 0 <= task_id < len(self.selected_tasks):
+            removed_task = self.selected_tasks.pop(task_id)
+            self.total_time -= removed_task.duration
 
     def get_total_time(self):
-        pass
+        return self.total_time
 
     def get_selected_tasks(self):
-        pass
+        return self.selected_tasks
 
 
 class AppController:
-    def __init__(self, owner, pet, task_manager, scheduler):
+    def __init__(self, owner):
         self.owner = owner
-        self.pet = pet
-        self.task_manager = task_manager
-        self.scheduler = scheduler
+        self.scheduler = Scheduler(owner)  # scheduler uses owner
 
-    def create_schedule(self):
-        pass
+    def create_schedule(self, date=None):
+        return self.scheduler.generate_schedule(date)
 
     def update_owner(self, new_owner_info):
-        pass
+        # Simple update, assuming new_owner_info is a dict
+        for key, value in new_owner_info.items():
+            if hasattr(self.owner, key):
+                setattr(self.owner, key, value)
 
     def add_task(self, task):
-        pass
+        self.owner.task_manager.add_task(task)
 
-    def get_schedule(self):
-        pass
+    def get_schedule(self, date):
+        return self.create_schedule(date)

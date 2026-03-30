@@ -8,8 +8,7 @@ My UML design includes classes for Owner, Pet , and Task. A TaskManager handles 
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes, there were some relationship issues that I needed to fix. The design now better supports scenarios with multiple pets and ensures proper data relationships throughout the system.
 
 ---
 
