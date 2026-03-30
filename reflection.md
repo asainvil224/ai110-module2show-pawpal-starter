@@ -4,8 +4,7 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+My UML design includes classes for Owner, Pet , and Task. A TaskManager handles task operations, while a Scheduler generates the daily plan based on time and priorities. The result is stored in a Schedule, with an optional AppController connecting everything to the Streamlit UI.
 
 **b. Design changes**
 
