@@ -31,13 +31,13 @@ My scheduler prioritizes respecting available time vs flexibility.Tasks are adde
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used copilot to help brainstorm what classes to create and what features to implement. I then used copilot to complete repetitive tasks. Asking copilot to look over the codebase and suggest changes were helpful.
+
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+When copilot was refactoring some of the code, I didn't like how it was starting to become unreadable, so I reverted the changes. I was verifying what AI was suggesting by testing out the changes.
+
 
 ---
 
@@ -45,13 +45,13 @@ My scheduler prioritizes respecting available time vs flexibility.Tasks are adde
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+I tested ask status changes, task counting, chronological ordering in schedules, daily recurrence creation, and conflict detection for overlapping times. These tests were important because it ensured consistant logic.
+
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+I am 90% sure my scheduler works. If I had more time I would test for tasks with zero or excessive duration
+
 
 ---
 
@@ -59,12 +59,12 @@ My scheduler prioritizes respecting available time vs flexibility.Tasks are adde
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+I'm satisfied with the overall output of the program.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+I would pontentially improve the UI and refine some of the edge cases.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+AI is a very powerful tool that can help speed up the process of designing and implementation.

@@ -112,18 +112,49 @@ if st.button("Generate schedule"):
     controller = AppController(demo_owner)
     schedule = controller.get_schedule(date=None)
 
-    st.success("Today's Schedule (simple demo, all tasks included)")
+    # Check for conflicts using Scheduler's detect_conflicts method
+    conflicts = controller.scheduler.detect_conflicts(schedule)
+    if conflicts:
+        st.warning("⚠️ Scheduling Conflicts Detected")
+        with st.expander("View Conflict Details"):
+            for conflict in conflicts:
+                st.write(f"• **{conflict['task1']}** (Pet: {conflict['pet1']}) and **{conflict['task2']}** (Pet: {conflict['pet2']}) overlap in time.")
+                if conflict['same_pet']:
+                    st.write("   _Note: Both tasks are for the same pet, which may not be feasible._")
+    else:
+        st.success("✅ Schedule Generated Successfully - No Conflicts Detected")
+
+    # Display schedule summary
     total_minutes = schedule.get_total_time()
-    st.write(f"Total time: {total_minutes} minutes")
-    rows = []
-    for task in schedule.get_selected_tasks():
-        rows.append(
-            {
-                "Task": task.name,
-                "Pet": task.pet.name,
-                "Duration": f"{task.duration} min",
-                "Priority": task.priority,
-                "Status": task.status,
-            }
-        )
-    st.table(rows)
+    num_tasks = len(schedule.get_selected_tasks())
+    available_hours = demo_owner.available_time
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total Scheduled Time", f"{total_minutes} min")
+    with col2:
+        st.metric("Number of Tasks", num_tasks)
+    with col3:
+        st.metric("Available Time", f"{available_hours} hours")
+
+    st.subheader("📅 Today's Schedule")
+    st.caption("Tasks are sorted by priority and fit within your available time, starting at 9:00 AM.")
+
+    if schedule.get_selected_tasks():
+        rows = []
+        for task in schedule.get_selected_tasks():
+            start_time_str = task.start_time.strftime("%H:%M") if task.start_time else "N/A"
+            priority_label = {1: "High", 2: "Medium", 3: "Low"}.get(task.priority, "Unknown")
+            rows.append(
+                {
+                    "Task": task.name,
+                    "Pet": task.pet.name,
+                    "Duration (min)": task.duration,
+                    "Priority": priority_label,
+                    "Start Time": start_time_str,
+                    "Status": task.status.capitalize(),
+                }
+            )
+        st.table(rows)
+    else:
+        st.info("No pending tasks to schedule for today.")

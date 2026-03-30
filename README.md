@@ -50,6 +50,17 @@ pip install -r requirements.txt
 - **Extras**: Task recurrence for auto-rescheduling, filtering/sorting tasks, and tradeoff-aware design prioritizing realism/simplicity.
 
 
+### Features
+
+- **Priority-Based Sorting**: Tasks are sorted by priority (lowest number first) to ensure high-priority tasks are scheduled early.
+- **Pending Task Filtering**: Only tasks with "pending" status are included in schedules, excluding completed tasks for relevance.
+- **Time Constraint Fitting**: Schedules fit tasks within the owner's available time (converted to minutes), starting at 9:00 AM, to prevent over-scheduling.
+- **Sequential Time Assignment**: Tasks are assigned back-to-back start times using a helper method to add minutes to time objects.
+- **Conflict Detection**: Detects overlapping tasks on the same date, flagging conflicts and noting if they involve the same pet.
+- **Daily/Weekly Recurrence**: When a recurring task is marked complete, a new task is automatically created for the next day (daily) or week (weekly).
+- **Task Management Operations**: Supports adding, editing, removing, filtering (by status or pet), and sorting tasks (by priority, duration, or name).
+- **Schedule Generation and Display**: Generates daily schedules with total time calculation, and displays them in a professional UI with metrics, tables, and conflict warnings.
+
 ### Testing PawPal+
 
 Run the tests with:
